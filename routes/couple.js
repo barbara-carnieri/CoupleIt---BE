@@ -4,6 +4,7 @@ const createError = require('http-errors');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const Couple = require('../models/couple');
+const User = require('../models/user');
 
 const parser = require('../config/cloudinary');
 
@@ -15,45 +16,41 @@ const {
 } = require('../helpers/middlewares');
 
 
-//  GET /couple	--> Renders the form view to add the couple
-router.get('/', isLoggedIn,  (req, res, next) => {
-  res.render('/', {
-    userInfo: req.session.currentUser
-  });
-});
-
-
-// POST	/couple	--> Add new couple in the DB 
-router.post('/', isLoggedIn, (req, res, next) => {
-
-  const theCouple = new Couple({
-    name: req.body.name,
-    gallery: [],
-    tasks: [],
-    stories: [],
-    calendar: [],
-    members:[{req.session.currentUser._id,}],
-  });
-
-  theCouple.save()
-    .then(coupleevent => {
-
-      User.updateOne({ _id: req.session.currentUser._id }, 
-        { $addToSet: { coupleId: coupleevent._id }
-        }, { new: true })
-        .then((data) => console.log('USER UPDATEDDDDD', data))
-        .catch((err) => console.log(err))
+ // POST '/couple'    => to post a new project
+router.post('/', (req, res, next) => {
+  const { name, email } = req.body;
+  const user = User.find(email).populate('members')
+  Couple.create({ name, tasks: [], gallery: [], stories:[], calendar: [], members:[] })
+    .then(createdCouple => {
+      console.log('CREATEEE', createdCouple)
+      res.status(201).json(createdCouple); //   .send(  JSON.stringify(createdProject)  )
     })
-    .then(() => {
-      res.redirect('/home');
-    })
-    .catch((err) => {
-      console.log(err);
-      res.render('couple');
+    .catch(err => {
+      res.status(500).json(err);
     });
 });
 
+//GET user email
+router.get('/email/:email', (req, res) => {
+  const { email } = req.params;
+  User.find( {email} ).populate('members')  // add .populate('') when other param of usermodel added
+    .then( (foundUser) => {
+      res.status(200).json(foundUser);
+    })
+    .catch((err) => {
+      res.res.status(500).json(err);
+    })
+  });
 
+  router.get('/', (req, res, next) => {
+    Couple.find()
+      .then(allProjects => {
+        res.status(200).json(allProjects);
+      })
+      .catch(err => {
+        res.status(400).json(err);
+      });
+  });
 
 
 module.exports = router;

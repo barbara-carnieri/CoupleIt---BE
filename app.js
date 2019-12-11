@@ -10,7 +10,9 @@ const cors = require('cors');
 require('dotenv').config();
 
 const auth = require('./routes/auth');
-
+const couple = require('./routes/couple');
+const user = require('./routes/user');
+const task = require('./routes/task');
 
 // MONGOOSE CONNECTION
 mongoose
@@ -68,12 +70,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // ROUTER MIDDLEWARE
 app.use('/auth', auth);
-app.use('/profile', profile);
+app.use('/user', user);
 app.use('/couple', couple);
-app.use('/gallery', gallery);
-app.use('/calendar', calendar);
+// app.use('/gallery', gallery);
+// app.use('/calendar', calendar);
 app.use('/task', task);
-app.use('/story', story);
+// app.use('/story', story);
 
 
 // ERROR HANDLING

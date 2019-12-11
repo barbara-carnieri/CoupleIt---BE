@@ -62,12 +62,13 @@ router.post(
 //  POST    '/signup'
 router.post(
   '/signup',
-  parser.single('photo'),
+  parser.single('photoUrl'),
   isNotLoggedIn,
   validationLoggin,
   async (req, res, next) => {
-    const { email, password, username } = req.body;
-    const photoUrl = req.file.secure_url;
+    console.log(req.body)
+    const { email, password, username, photoUrl  } = req.body;
+    // const imageUrl = req.file.secure_url;
 
     try {
       // projection
@@ -77,7 +78,7 @@ router.post(
       else {
         const salt = bcrypt.genSaltSync(saltRounds);
         const hashPass = bcrypt.hashSync(password, salt);
-        const newUser = await User.create({ email, username, password: hashPass, photoUrl });
+        const newUser = await User.create({ email, username, password: hashPass, photoUrl, coupleId: [] });
         req.session.currentUser = newUser;
         res
           .status(200) //  OK
