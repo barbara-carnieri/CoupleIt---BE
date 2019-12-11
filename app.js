@@ -68,6 +68,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // ROUTER MIDDLEWARE
 app.use('/auth', auth);
+app.use('/profile', profile);
+app.use('/couple', couple);
+app.use('/gallery', gallery);
+app.use('/calendar', calendar);
+app.use('/task', task);
+app.use('/story', story);
 
 
 // ERROR HANDLING
