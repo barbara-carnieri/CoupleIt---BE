@@ -15,6 +15,7 @@ const user = require('./routes/user');
 const task = require('./routes/task');
 const painting = require('./routes/painting');
 const gallery = require('./routes/gallery');
+const story = require('./routes/story');
 
 // MONGOOSE CONNECTION
 mongoose
@@ -77,7 +78,7 @@ app.use('/couple', couple);
 app.use('/gallery', gallery);
 // app.use('/calendar', calendar);
 app.use('/task', task);
-// app.use('/story', story);
+app.use('/story', story);
 app.use('/painting', painting);
 
 

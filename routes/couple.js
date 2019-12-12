@@ -19,13 +19,13 @@ const {
 
 
 // POST	/couple	--> Adds a new event in the DB 
-router.post('/', async (req, res, next) => {
+router.post('/', isLoggedIn, async (req, res, next) => {
   const { email } = req.body;
   // console.log(req.body);
   
   try {
     const userPartner = await User.findOne( {email} )
-    console.log(userPartner._id);
+    console.log(userPartner);
     
     const userId = req.session.currentUser._id
     const partnerId = userPartner._id
@@ -52,7 +52,7 @@ router.post('/', async (req, res, next) => {
 
 
 // GET '/couple'		 => to get all couples
-router.get('/', (req, res, next) => {
+router.get('/', isLoggedIn, (req, res, next) => {
   Couple.find()
     // .populate('tasks')
     .then(allCouples => {
@@ -65,7 +65,7 @@ router.get('/', (req, res, next) => {
 
 
 // GET '/couple/:id'   => to retrieve a specific task
-router.get('/:id', (req, res, next) => {
+router.get('/:id', isLoggedIn, (req, res, next) => {
   const { id } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid( id)) {

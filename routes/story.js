@@ -6,10 +6,19 @@ const router = express.Router();
 const Story = require('../models/story');
 const Couple = require('../models/couple');
 
+// HELPER FUNCTIONS
+const {
+  isLoggedIn,
+  isNotLoggedIn,
+  validationLoggin,
+} = require('../helpers/middlewares');
+
 
 // POST '/story'      => to create a new story
-router.post('/', (req, res, next) => {
+router.post('/', isLoggedIn, (req, res, next) => {
   const { date, title, description, type, coupleId } = req.body;
+  console.log('hhhhh', title);
+  
 
   Story.create({ date, title, description, type, coupleId: coupleId })
 
@@ -28,7 +37,7 @@ router.post('/', (req, res, next) => {
 });
 
 // GET '/story'		 => to get all story
-router.get('/', (req, res, next) => {
+router.get('/', isLoggedIn, (req, res, next) => {
   Story.find()
     // .populate('tasks')
     .then(allStories => {
@@ -39,18 +48,18 @@ router.get('/', (req, res, next) => {
     });
 });
 
-// // GET '/gallery/:id'   => to retrieve a specific photo
+// // GET '/story/:id'   => to retrieve a specific photo
 // router.get('/:id', (req, res, next) => {
 //   const { id } = req.params;
 
 //   if (!mongoose.Types.ObjectId.isValid( id)) {
-//     res.status(500).json({ message: 'Specified photoID is invalid' });
+//     res.status(500).json({ message: 'Specified storyID is invalid' });
 //     return;
 //   }
 
-//   Gallery.findById( id )
-//     .then(foundPhoto => {
-//       res.status(200).json(foundPhoto);
+//   Story.findById( id )
+//     .then(foundStory => {
+//       res.status(200).json(foundStory);
 //     })
 //     .catch(err => {
 //       res.status(400).json(err);
@@ -59,9 +68,9 @@ router.get('/', (req, res, next) => {
 
 
 // // PUT '/story/:id'    => to edit a specific story
-router.put('/:id', (req, res, next) => {
+router.put('/:id', isLoggedIn, (req, res, next) => {
   const { id } = req.params;
-  const { title, photoUrl } = req.body;
+  const { date, title, description, type, coupleId } = req.body;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     res.status(500).json({
@@ -70,10 +79,10 @@ router.put('/:id', (req, res, next) => {
     return;
   }
 
-  Gallery.findByIdAndUpdate(id, { title, photoUrl })
+  Story.findByIdAndUpdate(id, { date, title, description, type, coupleId })
     .then(() => {
       res.status(201).json({
-        message: 'Photo updated !',
+        message: 'Story updated !',
       });
     })
     .catch(err => {
@@ -84,7 +93,7 @@ router.put('/:id', (req, res, next) => {
 
 
 // // DELETE '/story/:id'     => to delete a specific story
-router.delete('/:id', (req, res, next) => {
+router.delete('/:id', isLoggedIn, (req, res, next) => {
   const { id } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -92,16 +101,16 @@ router.delete('/:id', (req, res, next) => {
     return;
   }
 
-  Gallery.findByIdAndRemove( id )
-    .then( (deletedPhoto) => {
-      return deletedPhoto.couple; // return the project id to the next then statement
+  Story.findByIdAndRemove( id )
+    .then( (deletedStory) => {
+      return deletedStory.couple; // return the project id to the next then statement
     })
     .then( (coupleId) => {
-       return Couple.findByIdAndUpdate( coupleId, { $pull : {gallery: id}});    
+       return Couple.findByIdAndUpdate( coupleId, { $pull : {stories: id}});    
     })
     .then( () => {
       // when project update promise is done we send the response 
-      res.status(201).json({ message: 'Photo deleted'});
+      res.status(201).json({ message: 'Story deleted'});
     })
     .catch( (err) => {
       res.status(400).json(err);
