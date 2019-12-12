@@ -13,6 +13,7 @@ const auth = require('./routes/auth');
 const couple = require('./routes/couple');
 const user = require('./routes/user');
 const task = require('./routes/task');
+const painting = require('./routes/painting');
 
 // MONGOOSE CONNECTION
 mongoose
@@ -76,6 +77,7 @@ app.use('/couple', couple);
 // app.use('/calendar', calendar);
 app.use('/task', task);
 // app.use('/story', story);
+app.use('/painting', painting);
 
 
 // ERROR HANDLING

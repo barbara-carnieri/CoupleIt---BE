@@ -12,7 +12,6 @@ const Couple = require('../models/couple');
 router.post('/', (req, res, next) => {
   const { name, description, coupleId } = req.body;
 
-  //project comes from project-routes and projectID from here
   Task.create({ name, description, coupleId: coupleId })
 
     .then( (newTask) => {
@@ -29,35 +28,35 @@ router.post('/', (req, res, next) => {
     });
 });
 
-// // GET '/task'		 => to get all tasks
-// router.get('/', (req, res, next) => {
-//   Task.find()
-//     // .populate('tasks')
-//     .then(allTasks => {
-//       res.status(200).json(allTasks);
-//     })
-//     .catch(err => {
-//       res.status(400).json(err);
-//     });
-// });
+// GET '/task'		 => to get all tasks
+router.get('/', (req, res, next) => {
+  Task.find()
+    // .populate('tasks')
+    .then(allTasks => {
+      res.status(200).json(allTasks);
+    })
+    .catch(err => {
+      res.status(400).json(err);
+    });
+});
 
-// GET '/api/projects/:projectId/tasks/:taskId'   => to retrieve a specific task
-// router.get('/projects/:projectId/tasks/:taskId', (req, res, next) => {
-//   const { taskId } = req.params;
+// GET '/tasks/:id'   => to retrieve a specific task
+router.get('/:id', (req, res, next) => {
+  const { id } = req.params;
 
-//   if (!mongoose.Types.ObjectId.isValid( taskId)) {
-//     res.status(500).json({ message: 'Specified taskId is invalid' });
-//     return;
-//   }
+  if (!mongoose.Types.ObjectId.isValid( id)) {
+    res.status(500).json({ message: 'Specified taskId is invalid' });
+    return;
+  }
 
-//   Task.findById( taskId )
-//     .then(foundTask => {
-//       res.status(200).json(foundTask);
-//     })
-//     .catch(err => {
-//       res.status(400).json(err);
-//     });
-// });
+  Task.findById( id )
+    .then(foundTask => {
+      res.status(200).json(foundTask);
+    })
+    .catch(err => {
+      res.status(400).json(err);
+    });
+});
 
 
 // // PUT '/tasks/:id'    => to edit a specific task
@@ -99,7 +98,7 @@ router.delete('/:id', (req, res, next) => {
       return deletedTask.couple; // return the project id to the next then statement
     })
     .then( (coupleId) => {
-       return Couple.findByIdAndUpdate( coupleId, { $pull : {tasks: id}}); // return the peding project update promise to the next then statement      
+       return Couple.findByIdAndUpdate( coupleId, { $pull : {tasks: id}});    
     })
     .then( () => {
       // when project update promise is done we send the response 

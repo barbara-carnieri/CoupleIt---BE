@@ -5,6 +5,7 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const Couple = require('../models/couple');
 const User = require('../models/user');
+const mongoose = require('mongoose');
 
 const parser = require('../config/cloudinary');
 
@@ -15,21 +16,6 @@ const {
   validationLoggin,
 } = require('../helpers/middlewares');
 
-
- // POST '/couple'    => to post a new project
-// router.post('/', (req, res, next) => {
-//   const { name, email } = req.body;
-  
-//   const user = User.find(email).populate('members')
-//   Couple.create({ name, tasks: [], gallery: [], stories:[], calendar: [], members:[] })
-//     .then(createdCouple => {
-//       console.log('CREATEEE', createdCouple)
-//       res.status(201).json(createdCouple); //   .send(  JSON.stringify(createdProject)  )
-//     })
-//     .catch(err => {
-//       res.status(500).json(err);
-//     });
-// });
 
 
 // POST	/couple	--> Adds a new event in the DB 
@@ -61,63 +47,41 @@ router.post('/', async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-    
 
-//   const theCouple = new Couple({
-//     name: req.body.name,
-//     members: [req.session.currentUser._id, emailuserID],
-//     gallery: [],
-//     tasks: [],
-//     stories: [],
-//     calendar: [],
-
-
-//   theCouple.save()
-//     .then(coupleevent => {
-//       User.updateOne({ _id: req.session.currentUser._id }, 
-//         { $addToSet: { coupleId: coupleevent._id }
-//         }, { new: true })
-//         .then((data) => console.log('USER UPDATEDDDDD', data))
-//         .catch((err) => console.log(err))
-//     })
-//     .then(() => {
-//       const { email } = req.body;
-//       User.find( {email} ).populate('members'); 
-//     })
-//     .then(() => {
-//       res.redirect('/couple');
-//     })
-//     .catch((err) => {
-//       console.log(err);
-//       res.render('/');
-//     });
 });
 
 
+// GET '/couple'		 => to get all couples
+router.get('/', (req, res, next) => {
+  Couple.find()
+    // .populate('tasks')
+    .then(allCouples => {
+      res.status(200).json(allCouples);
+    })
+    .catch(err => {
+      res.status(400).json(err);
+    });
+});
 
 
-//GET user email
-// router.get('/email/:email', (req, res) => {
-//   const { email } = req.params;
-//   User.find( {email} ).populate('members')  // add .populate('') when other param of usermodel added
-//     .then( (foundUser) => {
-//       res.status(200).json(foundUser);
-//     })
-//     .catch((err) => {
-//       res.res.status(500).json(err);
-//     })
-//   });
+// GET '/couple/:id'   => to retrieve a specific task
+router.get('/:id', (req, res, next) => {
+  const { id } = req.params;
 
+  if (!mongoose.Types.ObjectId.isValid( id)) {
+    res.status(500).json({ message: 'Specified coupleID is invalid' });
+    return;
+  }
 
-// router.get('/', (req, res, next) => {
-//     Couple.find()
-//       .then(allProjects => {
-//         res.status(200).json(allProjects);
-//       })
-//       .catch(err => {
-//         res.status(400).json(err);
-//       });
-//   });
+  Couple.findById( id )
+    .then(foundCouple => {
+      res.status(200).json(foundCouple);
+    })
+    .catch(err => {
+      res.status(400).json(err);
+    });
+});
+
 
 
 module.exports = router;
