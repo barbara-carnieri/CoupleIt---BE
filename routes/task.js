@@ -60,54 +60,54 @@ router.post('/', (req, res, next) => {
 // });
 
 
-// // PUT '/api/tasks/:id'    => to update a specific task
-// router.put('/tasks/:id', (req, res, next) => {
-//   const { id } = req.params;
-//   const { name, description } = req.body;
+// // PUT '/tasks/:id'    => to edit a specific task
+router.put('/:id', (req, res, next) => {
+  const { id } = req.params;
+  const { name, description } = req.body;
 
-//   if (!mongoose.Types.ObjectId.isValid(id)) {
-//     res.status(500).json({
-//       message: 'Specified taskid is invalid',
-//     });
-//     return;
-//   }
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    res.status(500).json({
+      message: 'Specified taskid is invalid',
+    });
+    return;
+  }
 
-//   Task.findByIdAndUpdate(id, { title, description })
-//     .then(() => {
-//       res.status(201).json({
-//         message: 'Task updated !',
-//       });
-//     })
-//     .catch(err => {
-//       res.status(400).json(err);
-//     });
-// });
+  Task.findByIdAndUpdate(id, { name, description })
+    .then(() => {
+      res.status(201).json({
+        message: 'Task updated !',
+      });
+    })
+    .catch(err => {
+      res.status(400).json(err);
+    });
+});
 
 
 
-// // DELETE '/api/tasks/:id'     => to delete a specific task
-// router.delete('/tasks/:id', (req, res, next) => {
-//   const { id } = req.params;
+// // DELETE '/tasks/:id'     => to delete a specific task
+router.delete('/:id', (req, res, next) => {
+  const { id } = req.params;
 
-//   if (!mongoose.Types.ObjectId.isValid(id)) {
-//     res.status(500).json({ message: 'Specified task id is invalid' });
-//     return;
-//   }
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    res.status(500).json({ message: 'Specified task id is invalid' });
+    return;
+  }
 
-//   Task.findByIdAndRemove( id )
-//     .then( (deletedTask) => {
-//       return deletedTask.project; // return the project id to the next then statement
-//     })
-//     .then( (projectId) => {
-//        return Project.findByIdAndUpdate( projectId, { $pull : {tasks: id}}); // return the peding project update promise to the next then statement      
-//     })
-//     .then( () => {
-//       // when project update promise is done we send the response 
-//       res.status(201).json({ message: 'Task deleted'});
-//     })
-//     .catch( (err) => {
-//       res.status(400).json(err);
-//     });
-// })
+  Task.findByIdAndRemove( id )
+    .then( (deletedTask) => {
+      return deletedTask.couple; // return the project id to the next then statement
+    })
+    .then( (coupleId) => {
+       return Couple.findByIdAndUpdate( coupleId, { $pull : {tasks: id}}); // return the peding project update promise to the next then statement      
+    })
+    .then( () => {
+      // when project update promise is done we send the response 
+      res.status(201).json({ message: 'Task deleted'});
+    })
+    .catch( (err) => {
+      res.status(400).json(err);
+    });
+})
 
 module.exports = router;
