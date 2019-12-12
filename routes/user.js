@@ -38,7 +38,7 @@ router.get('/:id', (req, res, next) => {
 });
 
 
-// PUT '/user/:id' 		=> to update a specific project
+// PUT '/user/:id' 		=> to update a specific user
 router.patch('/:id', (req, res, next) => {
   const { id } = req.params;
   const { username, email, password, photoUrl } = req.body;
@@ -57,7 +57,7 @@ router.patch('/:id', (req, res, next) => {
     return;
   }
 
-  User.findByIdAndUpdate(id, { username, email, password, photoUrl })
+  User.findByIdAndUpdate(id, { username, email, password, photoUrl, coupleId })
     .then(() => {
       res.status(200).json({
         message: 'Project updated !',
