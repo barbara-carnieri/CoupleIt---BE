@@ -6,39 +6,44 @@ const router = express.Router();
 
 const Gallery = require('../models/gallery');
 const Couple = require('../models/couple');
+const User = require('../models/user');
 
 
 // POST '/gallery'      => to create a new photo
-router.post('/', (req, res, next) => {
-  const { title, photoUrl, coupleId } = req.body;
+router.post('/', async (req, res, next) => {
+  
 
-  Gallery.create({ title, photoUrl, coupleId: coupleId })
+try { 
+  const currentUser = await User.findById(req.session.currentUser._id)
+  const { title, photoUrl } = req.body;
+  const {coupleId} = currentUser;
 
-    .then( (newPhoto) => {
-
-      //it will push to the array created
-      return Couple.findByIdAndUpdate(coupleId, { $push: { gallery: newPhoto._id} }, {new: true})
-      .populate('gallery')
-    })
-      .then((updatedCouple) => {
-      res.status(201).json(updatedCouple); 
-    })
-    .catch(err => {
-      res.status(400).json(err);
-    });
+  const newPhoto = await Gallery.create({ title, photoUrl, coupleId })
+  const updatedCouple = await Couple.findByIdAndUpdate(coupleId, { $push: { gallery: newPhoto._id} }, {new: true})
+  
+  res.status(201).json(updatedCouple); 
+} catch (error) {
+  next (error)
+}
 });
 
 // GET '/gallery'		 => to get all photos
-router.get('/', (req, res, next) => {
-  Gallery.find()
-    // .populate('tasks')
-    .then(allPhotos => {
-      res.status(200).json(allPhotos);
-    })
-    .catch(err => {
-      res.status(400).json(err);
-    });
+router.get('/', async (req, res, next) => {
+
+try { 
+  const currentUser = await User.findById(req.session.currentUser._id)
+  const {coupleId} = currentUser;
+
+  const couple = await Couple.findById(coupleId)
+  .populate("gallery");
+  console.log('couplegalleryy', couple);
+  
+  res.status(201).json(couple.gallery); 
+} catch (error) {
+  next (error)
+}
 });
+
 
 // GET '/gallery/:id'   => to retrieve a specific photo
 router.get('/:id', (req, res, next) => {

@@ -39,8 +39,8 @@ router.post('/', isLoggedIn, async (req, res, next) => {
     const newCouple = await Couple.create( theCouple )
     console.log('NEW COUPLEE', newCouple);
 
-  await User.findByIdAndUpdate( userId, {$push: { coupleId: newCouple._id}})
-  await User.findByIdAndUpdate( partnerId, {$push: { coupleId: newCouple._id}})
+  await User.findByIdAndUpdate( userId, {$push: { coupleId: newCouple._id}}, {new: true})
+  await User.findByIdAndUpdate( partnerId, {$push: { coupleId: newCouple._id}}, {new: true})
     
     res.status(200).json(newCouple);
       
