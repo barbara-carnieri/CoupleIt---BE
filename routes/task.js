@@ -6,42 +6,49 @@ const router = express.Router();
 
 const Task = require('../models/task');
 const Couple = require('../models/couple');
+const User = require('../models/user');
 
+// HELPER FUNCTIONS
+const {
+  isLoggedIn,
+  isNotLoggedIn,
+  validationLoggin,
+} = require('../helpers/middlewares');
 
 // POST '/tasks'      => to create a new task
-router.post('/', (req, res, next) => {
-  const { name, description, coupleId } = req.body;
-
-  Task.create({ name, description, coupleId: coupleId })
-
-    .then( (newTask) => {
-
-      //it will push to the array created
-      return Couple.findByIdAndUpdate(coupleId, { $push: { tasks: newTask._id} }, {new: true})
-      .populate('tasks')
-    })
-      .then((updatedCouple) => {
-      res.status(201).json(updatedCouple); 
-    })
-    .catch(err => {
-      res.status(400).json(err);
-    });
+router.post('/', isLoggedIn, async (req, res, next) => {
+  try { 
+    const currentUser = await User.findById(req.session.currentUser._id)
+    const { name, description } = req.body;
+    const {coupleId} = currentUser;
+  
+    const newTask = await Task.create({ name, description, coupleId })
+    const updatedCouple = await Couple.findByIdAndUpdate(coupleId, { $push: { tasks: newTask._id} }, {new: true})
+    
+    res.status(201).json(updatedCouple); 
+  } catch (error) {
+    next (error)
+  }
 });
 
 // GET '/task'		 => to get all tasks
-router.get('/', (req, res, next) => {
-  Task.find()
-    // .populate('tasks')
-    .then(allTasks => {
-      res.status(200).json(allTasks);
-    })
-    .catch(err => {
-      res.status(400).json(err);
-    });
+router.get('/', isLoggedIn, async (req, res, next) => {
+  try { 
+    const currentUser = await User.findById(req.session.currentUser._id)
+    const {coupleId} = currentUser;
+  
+    const couple = await Couple.findById(coupleId)
+    .populate("tasks");
+    console.log('coupletasks', couple);
+    
+    res.status(201).json(couple.tasks); 
+  } catch (error) {
+    next (error)
+  }
 });
 
 // GET '/tasks/:id'   => to retrieve a specific task
-router.get('/:id', (req, res, next) => {
+router.get('/:id', isLoggedIn, (req, res, next) => {
   const { id } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid( id)) {
@@ -60,7 +67,7 @@ router.get('/:id', (req, res, next) => {
 
 
 // // PUT '/tasks/:id'    => to edit a specific task
-router.put('/:id', (req, res, next) => {
+router.put('/:id', isLoggedIn, (req, res, next) => {
   const { id } = req.params;
   const { name, description } = req.body;
 
@@ -85,7 +92,7 @@ router.put('/:id', (req, res, next) => {
 
 
 // // DELETE '/tasks/:id'     => to delete a specific task
-router.delete('/:id', (req, res, next) => {
+router.delete('/:id', isLoggedIn, (req, res, next) => {
   const { id } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {

@@ -5,6 +5,7 @@ const router = express.Router();
 
 const Story = require('../models/story');
 const Couple = require('../models/couple');
+const User = require('../models/user');
 
 // HELPER FUNCTIONS
 const {
@@ -13,39 +14,36 @@ const {
   validationLoggin,
 } = require('../helpers/middlewares');
 
-
-// POST '/story'      => to create a new story
-router.post('/', isLoggedIn, (req, res, next) => {
-  const { date, title, description, type, coupleId } = req.body;
-  console.log('hhhhh', title);
+// POST '/stories'      => to create a new story
+router.post('/', isLoggedIn, async (req, res, next) => {
+  try { 
+    const currentUser = await User.findById(req.session.currentUser._id)
+    const { date, title, description, type } = req.body;
+    const {coupleId} = currentUser;
   
-
-  Story.create({ date, title, description, type, coupleId: coupleId })
-
-    .then( (newStory) => {
-
-      //it will push to the array created
-      return Couple.findByIdAndUpdate(coupleId, { $push: { stories: newStory._id} }, {new: true})
-      .populate('gallery')
-    })
-      .then((updatedCouple) => {
-      res.status(201).json(updatedCouple); 
-    })
-    .catch(err => {
-      res.status(400).json(err);
-    });
+    const newStory = await Story.create({ date, title, description, type, coupleId })
+    const updatedCouple = await Couple.findByIdAndUpdate(coupleId, { $push: { stories: newStory._id} }, {new: true})
+    
+    res.status(201).json(updatedCouple); 
+  } catch (error) {
+    next (error)
+  }
 });
 
-// GET '/story'		 => to get all story
-router.get('/', isLoggedIn, (req, res, next) => {
-  Story.find()
-    // .populate('tasks')
-    .then(allStories => {
-      res.status(200).json(allStories);
-    })
-    .catch(err => {
-      res.status(400).json(err);
-    });
+// GET '/story'		 => to get all stories
+router.get('/', isLoggedIn, async (req, res, next) => {
+  try { 
+    const currentUser = await User.findById(req.session.currentUser._id)
+    const {coupleId} = currentUser;
+  
+    const couple = await Couple.findById(coupleId)
+    .populate("stories");
+    console.log('couplestories', couple);
+    
+    res.status(201).json(couple.stories); 
+  } catch (error) {
+    next (error)
+  }
 });
 
 // // GET '/story/:id'   => to retrieve a specific photo
