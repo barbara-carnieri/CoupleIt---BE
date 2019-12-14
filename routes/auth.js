@@ -60,13 +60,14 @@ router.post(
 //  POST    '/signup'
 router.post(
   '/signup',
-  parser.single('photoUrl'),
   isNotLoggedIn,
   validationLoggin,
+  parser.single('photoUrl'),
   async (req, res, next) => {
+      // const photoUrl = req.file.secure_url;
     console.log(req.body)
-    const { email, password, username, photoUrl  } = req.body;
-    // const imageUrl = req.file.secure_url;
+    const { email, password, username, photoUrl } = req.body;
+  
 
     try {
       // projection
