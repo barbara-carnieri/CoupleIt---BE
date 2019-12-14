@@ -39,10 +39,9 @@ router.get('/:id', (req, res, next) => {
 
 
 // PUT '/user/:id' 		=> to update a specific user
-router.patch('/:id', (req, res, next) => {
+router.put('/:id', (req, res, next) => {
   const { id } = req.params;
-  const { username, email, password, photoUrl } = req.body;
-
+  const { username, email, password, photoUrl, coupleId } = req.body;
   if (!username || !email || !password || !photoUrl) {
     res.status(500).json({
       message: 'all fields are mandatory',

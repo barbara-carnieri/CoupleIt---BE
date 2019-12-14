@@ -64,10 +64,10 @@ router.post(
   validationLoggin,
   parser.single('photoUrl'),
   async (req, res, next) => {
-      // const photoUrl = req.file.secure_url;
+  
     console.log(req.body)
     const { email, password, username, photoUrl } = req.body;
-  
+    // const photoUrl = req.file.secure_url;
 
     try {
       // projection
