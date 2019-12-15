@@ -38,7 +38,7 @@ router.get('/', isLoggedIn, async (req, res, next) => {
   
     const couple = await Couple.findById(coupleId)
     .populate("stories");
-    console.log('couplestories', couple);
+    // console.log('couplestories', couple);
     
     res.status(201).json(couple.stories); 
   } catch (error) {

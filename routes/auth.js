@@ -65,7 +65,7 @@ router.post(
   parser.single('photoUrl'),
   async (req, res, next) => {
   
-    console.log(req.body)
+    // console.log(req.body)
     const { email, password, username, photoUrl } = req.body;
     // const photoUrl = req.file.secure_url;
 
@@ -79,7 +79,7 @@ router.post(
         const hashPass = bcrypt.hashSync(password, salt);
         const newUser = await User.create({ email, username, password: hashPass, photoUrl });
         req.session.currentUser = newUser;
-        console.log('newUser', req.session.currentUser);
+        // console.log('newUser', req.session.currentUser);
         res
           .status(200) //  OK
           .json(newUser);

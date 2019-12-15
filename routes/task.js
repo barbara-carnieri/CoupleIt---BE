@@ -25,7 +25,7 @@ router.post('/', isLoggedIn, async (req, res, next) => {
     const newTask = await Task.create({ name, description, coupleId })
     const updatedCouple = await Couple.findByIdAndUpdate(coupleId, { $push: { tasks: newTask._id} }, {new: true})
     
-    res.status(201).json(updatedCouple); 
+    res.status(201).json(newTask); 
   } catch (error) {
     next (error)
   }
@@ -39,7 +39,7 @@ router.get('/', isLoggedIn, async (req, res, next) => {
   
     const couple = await Couple.findById(coupleId)
     .populate("tasks");
-    console.log('coupletasks', couple);
+    // console.log('coupletasks', couple);
     
     res.status(201).json(couple.tasks); 
   } catch (error) {

@@ -19,7 +19,7 @@ const {
 
 // GET '/user/:id'		 => to get a user
 router.get('/:id', (req, res, next) => {
-  console.log(req.params)
+  // console.log(req.params)
   const { id } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {

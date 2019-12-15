@@ -40,7 +40,7 @@ try {
 
   const couple = await Couple.findById(coupleId)
   .populate("gallery");
-  console.log('couplegalleryy', couple);
+  // console.log('couplegalleryy', couple);
   
   res.status(201).json(couple.gallery); 
 } catch (error) {
