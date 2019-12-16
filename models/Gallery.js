@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const gallerySchema = new Schema({
   title:{ type: String, required: true},
-  photoUrl: { type: String, required: true},
+  photoUrl: { type: String},
   coupleId: { type: Schema.Types.ObjectId, ref: 'Couple'},
 }, 
 {

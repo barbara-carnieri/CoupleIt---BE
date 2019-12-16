@@ -21,7 +21,7 @@ const {
 // POST	/couple	--> Adds a new event in the DB 
 router.post('/', isLoggedIn, async (req, res, next) => {
   const { email } = req.body;
-  // console.log(req.body);
+  console.log(req.body);
   
   try {
     const userPartner = await User.findOne( {email} )
