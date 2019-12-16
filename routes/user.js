@@ -4,7 +4,7 @@ const mongoose = require('mongoose')
 const createError = require('http-errors');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
-const User = require('../models/user');
+const User = require('../models/User');
 
 const parser = require('../config/cloudinary');
 // HELPER FUNCTIONS
@@ -66,6 +66,7 @@ router.put('/:id/edit', (req, res, next) => {
       res.status(400).json(err);
     });
 });
+// console.log();
 
 
 

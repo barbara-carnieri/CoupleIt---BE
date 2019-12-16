@@ -3,9 +3,9 @@ const mongoose = require('mongoose');
 
 const router = express.Router();
 
-const Story = require('../models/story');
-const Couple = require('../models/couple');
-const User = require('../models/user');
+const Story = require('../models/Story');
+const Couple = require('../models/Couple');
+const User = require('../models/User');
 
 // HELPER FUNCTIONS
 const {

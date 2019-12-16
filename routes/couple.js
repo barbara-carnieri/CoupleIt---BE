@@ -3,8 +3,8 @@ const router = express.Router();
 const createError = require('http-errors');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
-const Couple = require('../models/couple');
-const User = require('../models/user');
+const Couple = require('../models/Couple');
+const User = require('../models/User');
 const mongoose = require('mongoose');
 
 const parser = require('../config/cloudinary');

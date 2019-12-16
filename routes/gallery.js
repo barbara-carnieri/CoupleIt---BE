@@ -4,9 +4,9 @@ const mongoose = require('mongoose');
 
 const router = express.Router();
 
-const Gallery = require('../models/gallery');
-const Couple = require('../models/couple');
-const User = require('../models/user');
+const Gallery = require('../models/Gallery');
+const Couple = require('../models/Couple');
+const User = require('../models/User');
 
 // HELPER FUNCTIONS
 const {
