@@ -28,7 +28,7 @@ router.get('/:id', (req, res, next) => {
   }
 
   User.findById(id)
-    // .populate('tasks')
+    .populate('coupleId')
     .then(foundUser => {
       res.status(200).json(foundUser);
     })
@@ -38,16 +38,10 @@ router.get('/:id', (req, res, next) => {
 });
 
 
-// PUT '/user/:id' 		=> to update a specific user
-router.put('/:id/edit', (req, res, next) => {
-  const { id } = req.params;
-  const { username, email, password, photoUrl, coupleId } = req.body;
-  if (!username || !email || !password || !photoUrl) {
-    res.status(500).json({
-      message: 'all fields are mandatory',
-    });
-    return;
-  }
+// PUT '/user/:id/edit' 		=> to update a specific user
+router.put('/:id/edit',  parser.single('photoUrl'), (req, res, next) => {
+  const { id, coupleId } = req.params;
+  const { username, email, password, photoUrl } = req.body;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     res.status(500).json({
@@ -56,7 +50,7 @@ router.put('/:id/edit', (req, res, next) => {
     return;
   }
 
-  User.findByIdAndUpdate(id, { username, email, password, photoUrl, coupleId })
+  User.findByIdAndUpdate( id, coupleId, { username, email, password, photoUrl })
     .then(() => {
       res.status(200).json({
         message: 'Project updated !',
