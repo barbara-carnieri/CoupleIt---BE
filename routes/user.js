@@ -39,7 +39,7 @@ router.get('/:id', (req, res, next) => {
 
 
 // PUT '/user/:id' 		=> to update a specific user
-router.put('/:id', (req, res, next) => {
+router.put('/:id/edit', (req, res, next) => {
   const { id } = req.params;
   const { username, email, password, photoUrl, coupleId } = req.body;
   if (!username || !email || !password || !photoUrl) {
