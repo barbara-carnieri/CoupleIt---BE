@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const multer = require("multer");
-const upload = multer({ dest: "./../public/images/uploads/" });
+// const upload = multer({ dest: "./../public/images/uploads/" });
 const parser = require("./../config/cloudinary");
 
 // router.post("/", upload.single("photo"), function(req, res, next) {
