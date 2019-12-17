@@ -102,11 +102,11 @@ router.post('/logout', isLoggedIn, (req, res, next) => {
   return;
 });
 
-//  GET    '/private'   --> Only for testing - Same as /me but it returns a message instead
-router.get('/private', isLoggedIn, (req, res, next) => {
-  res
-    .status(200) // OK
-    .json({ message: 'Test - User is logged in' });
-});
+// //  GET    '/private'   --> Only for testing - Same as /me but it returns a message instead
+// router.get('/private', isLoggedIn, (req, res, next) => {
+//   res
+//     .status(200) // OK
+//     .json({ message: 'Test - User is logged in' });
+// });
 
 module.exports = router;

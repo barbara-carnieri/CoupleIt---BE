@@ -33,14 +33,19 @@ router.post('/', isLoggedIn, async (req, res, next) => {
     const theCouple = {
       name: req.body.name,
       members: [userId, partnerId],
-        }
+    }
 
     const newCouple = await Couple.create( theCouple )
     // console.log('NEW COUPLEE', newCouple);
 
-  await User.findByIdAndUpdate( userId, {$push: { coupleId: newCouple._id}}, {new: true})
-  await User.findByIdAndUpdate( partnerId, {$push: { coupleId: newCouple._id}}, {new: true})
+  const updatedCurrentUser = await User.findByIdAndUpdate( userId, { coupleId: newCouple._id}, {new: true})
+  await User.findByIdAndUpdate( partnerId, { coupleId: newCouple._id}, {new: true})
+    console.log('UPDATED USER WITH COUPLE', updatedCurrentUser);
     
+    if (updatedCurrentUser) {
+      req.session.currentUser = updatedCurrentUser;
+    }
+
     res.status(200).json(newCouple);
       
   } catch (error) {

@@ -35,8 +35,14 @@ router.post('/', isLoggedIn, async (req, res, next) => {
 router.get('/', isLoggedIn, async (req, res, next) => {
   try { 
     const currentUser = await User.findById(req.session.currentUser._id)
+    console.log('CURRENT USER', currentUser);
+    
     const {coupleId} = currentUser;
-  console.log(coupleId)
+
+    console.log('coupleId', coupleId);
+    console.log('req.session.currentUser', req.session.currentUser);
+
+
     const couple = await Couple.findById(coupleId)
     .populate("tasks");
     // console.log('coupletasks', couple);
