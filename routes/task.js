@@ -19,10 +19,10 @@ const {
 router.post('/', isLoggedIn, async (req, res, next) => {
   try { 
     const currentUser = await User.findById(req.session.currentUser._id)
-    const { name, description } = req.body;
+    const { name, description, completed } = req.body;
     const {coupleId} = currentUser;
   console.log(coupleId)
-    const newTask = await Task.create({ name, description, coupleId })
+    const newTask = await Task.create({ name, description, completed, coupleId })
     const updatedCouple = await Couple.findByIdAndUpdate(coupleId, { $push: { tasks: newTask._id} }, {new: true})
     
     res.status(201).json(newTask); 
@@ -75,7 +75,7 @@ router.get('/:id', isLoggedIn, (req, res, next) => {
 // // PUT '/tasks/:id'    => to edit a specific task
 router.put('/:id', isLoggedIn, (req, res, next) => {
   const { id } = req.params;
-  const { name, description } = req.body;
+  const { name, description, completed } = req.body;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     res.status(500).json({
@@ -84,7 +84,7 @@ router.put('/:id', isLoggedIn, (req, res, next) => {
     return;
   }
 
-  Task.findByIdAndUpdate(id, { name, description })
+  Task.findByIdAndUpdate(id, { name, description, completed })
     .then(() => {
       res.status(201).json({
         message: 'Task updated !',

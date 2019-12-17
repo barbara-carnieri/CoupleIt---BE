@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 const taskSchema = new Schema({
   name:{ type: String, required: true},
   description: { type: String, required: true},
+  completed: Boolean,
   coupleId: { type: Schema.Types.ObjectId, ref: 'Couple'},
 }, 
 {
