@@ -14,9 +14,6 @@ const {
   validationLoggin,
 } = require('../helpers/middlewares');
 
-
-
-
 // GET '/user/:id'		 => to get a user
 router.get('/:id', (req, res, next) => {
   // console.log(req.params)
@@ -39,9 +36,9 @@ router.get('/:id', (req, res, next) => {
 
 
 // PUT '/user/:id/edit' 		=> to update a specific user
-router.put('/:id/edit',  parser.single('photoUrl'), (req, res, next) => {
-  const { id, coupleId } = req.params;
-  const { username, email, password, photoUrl } = req.body;
+router.put('/:id/edit',  parser.single('photoUrl'), async (req, res, next) => {
+  const { id } = req.params;
+  const { username, email, password, photoUrl, coupleId } = req.body;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
     res.status(500).json({
@@ -50,19 +47,22 @@ router.put('/:id/edit',  parser.single('photoUrl'), (req, res, next) => {
     return;
   }
 
-  User.findByIdAndUpdate( id, coupleId, { username, email, password, photoUrl })
-    .then(() => {
-      res.status(200).json({
-        message: 'Project updated !',
-      });
-    })
-    .catch(err => {
-      res.status(400).json(err);
-    });
+
+  try {
+ 
+  const salt = bcrypt.genSaltSync(saltRounds);
+  const hashPass = bcrypt.hashSync(password, salt);
+  const newUser = await User.findByIdAndUpdate( id, { coupleId, username, email, password: hashPass, photoUrl })
+  req.session.currentUser = newUser;
+  
+      res
+        .status(200) //  OK
+        .json(newUser);
+    
+  } catch (error) {
+    next(error);
+  }
+
 });
-// console.log();
-
-
-
 
 module.exports = router;
