@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const storySchema = new Schema({
   date:{ type: String, required: true},
   title:{ type: String, required: true},
-  description:{ type: String, required: true},
+  description:{ type: String},
   type: { type: String, required: true},
   coupleId: { type: Schema.Types.ObjectId, ref: 'Couple'},
 }, 
