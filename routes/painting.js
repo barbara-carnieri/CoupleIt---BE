@@ -35,7 +35,7 @@ router.post("/", parser.single("photo"), (req, res, next) => {
     next(new Error("No file uploaded!"));
   }
   const imageUrl = req.file.secure_url;
-  console.log(imageUrl);
+  // console.log(imageUrl);
   res.json(imageUrl).status(200);
 });
 

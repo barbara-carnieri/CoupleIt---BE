@@ -21,7 +21,7 @@ router.post('/', isLoggedIn, async (req, res, next) => {
     const currentUser = await User.findById(req.session.currentUser._id)
     const { name, description, completed } = req.body;
     const {coupleId} = currentUser;
-  console.log(coupleId)
+  // console.log(coupleId)
     const newTask = await Task.create({ name, description, completed, coupleId })
     const updatedCouple = await Couple.findByIdAndUpdate(coupleId, { $push: { tasks: newTask._id} }, {new: true})
     
@@ -35,12 +35,12 @@ router.post('/', isLoggedIn, async (req, res, next) => {
 router.get('/', isLoggedIn, async (req, res, next) => {
   try { 
     const currentUser = await User.findById(req.session.currentUser._id)
-    console.log('CURRENT USER', currentUser);
+    // console.log('CURRENT USER', currentUser);
     
     const {coupleId} = currentUser;
 
-    console.log('coupleId', coupleId);
-    console.log('req.session.currentUser', req.session.currentUser);
+    // console.log('coupleId', coupleId);
+    // console.log('req.session.currentUser', req.session.currentUser);
 
 
     const couple = await Couple.findById(coupleId)
