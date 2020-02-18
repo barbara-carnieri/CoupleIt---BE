@@ -251,7 +251,7 @@ Link to your trello board
 URls for the project repo and deploy
 [Link Repo Server]()
 [Link Repo Client]()
-[Link Deploy]()
+[Link Deploy](https://coupleit-app.herokuapp.com)
 
 
 ### Slides
